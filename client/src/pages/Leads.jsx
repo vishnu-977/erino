@@ -109,6 +109,13 @@ export default function Leads() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, pageSize]);
 
+  // Listen for new leads created from LeadForm
+  useEffect(() => {
+    const handler = (e) => setRows(prev => [e.detail, ...prev]);
+    window.addEventListener("leadCreated", handler);
+    return () => window.removeEventListener("leadCreated", handler);
+  }, []);
+
   function applyFilters(e) {
     e.preventDefault();
     setPage(0);

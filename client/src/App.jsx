@@ -1,23 +1,24 @@
-import React from "react";
-import { Outlet, Link, useNavigate } from "react-router-dom";
-import { api } from "./api";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import App from "./App";
+import Leads from "./pages/Leads";
+import LeadForm from "./pages/LeadForm";
+import LoginRegister from "./pages/LoginRegister";
 
-export default function App() {
-  const navigate = useNavigate();
-  async function logout() {
-    await api("/auth/logout", { method: "POST" });
-    localStorage.removeItem("me");
-    navigate("/auth");
-  }
+export default function Router() {
   return (
-    <div style={{ maxWidth: 1100, margin: "0 auto", padding: 16 }}>
-      <header style={{ display: "flex", gap: 12, alignItems: "center", marginBottom: 16 }}>
-        <h2 style={{ marginRight: "auto" }}>Erino Leads</h2>
-        <Link to="/leads">Leads</Link>
-        <Link to="/leads/new">Create Lead</Link>
-        <button onClick={logout}>Logout</button>
-      </header>
-      <Outlet />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/auth" element={<LoginRegister />} />
+        <Route path="/" element={<App />}>
+          <Route index element={<Leads />} />
+          <Route path="leads" element={<Leads />} />
+          <Route
+            path="leads/new"
+            element={<LeadForm onLeadCreated={(newLead) => window.dispatchEvent(new CustomEvent("leadCreated", { detail: newLead }))} />}
+          />
+          <Route path="leads/:id" element={<LeadForm />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }

@@ -12,10 +12,13 @@ const app = express();
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(cookieParser());
+
+
 app.use(cors({
-  origin: CLIENT_ORIGIN,
+  origin: process.env.CLIENT_ORIGIN || 'http://localhost:5173',
   credentials: true
 }));
+
 
 app.get("/", (_, res) => res.send("Erino LMS API up"));
 
